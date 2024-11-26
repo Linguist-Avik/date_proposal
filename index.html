@@ -8,7 +8,7 @@
     body {
       font-family: Arial, sans-serif;
       text-align: center;
-      background-color: #f0f8ff;
+      background-color: #f9f9f9;
       margin: 0;
       padding: 0;
       display: flex;
@@ -19,14 +19,15 @@
       overflow: hidden;
     }
 
-    h1 {
-      font-size: 24px;
+    h1, h2 {
       color: #333;
-      line-height: 1.5;
+      margin: 0 0 20px 0;
+      font-weight: normal;
     }
 
-    .bold {
+    h1 span {
       font-weight: bold;
+      color: red;
     }
 
     .button-container {
@@ -34,17 +35,18 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      gap: 20px; /* Space between buttons */
       margin-top: 20px;
-      gap: 20px;
     }
 
     button {
-      font-size: 18px;
+      font-size: 16px;
       padding: 10px 20px;
       border: none;
       border-radius: 5px;
       cursor: pointer;
       position: absolute;
+      transition: transform 0.2s ease;
     }
 
     #yes-button {
@@ -70,7 +72,7 @@
       padding: 10px 20px;
       border-radius: 5px;
       display: none;
-      font-size: 16px;
+      font-size: 14px;
       opacity: 0.9;
     }
 
@@ -82,14 +84,12 @@
   </style>
 </head>
 <body>
-  <h1>
-    <span class="bold">Dear Sushrita</span> <br>
-    Will you go on a date with me?
-  </h1>
+  <h1>Dear Sushrita <span>&#10084;</span></h1>
+  <h2>Will you go on a date with me?</h2>
 
   <div class="button-container">
     <button id="yes-button" onclick="yesClick()">Yes</button>
-    <button id="no-button" onmouseenter="moveNoButton()" onclick="handleNoClick()">No</button>
+    <button id="no-button" onclick="handleNoClick()">No</button>
   </div>
 
   <p id="message"></p>
@@ -108,32 +108,38 @@
     ];
     let noClickCount = 0;
 
-    function moveNoButton() {
+    function getRandomPosition() {
+      const maxX = window.innerWidth - noButton.offsetWidth;
+      const maxY = window.innerHeight - noButton.offsetHeight;
+
+      // Generate random positions within screen bounds
+      const randomX = Math.random() * maxX;
+      const randomY = Math.random() * maxY;
+
       const yesRect = yesButton.getBoundingClientRect();
-      const noRect = noButton.getBoundingClientRect();
 
-      let newLeft, newTop;
+      // Ensure "No" button doesn't overlap with "Yes" button
+      if (
+        randomX < yesRect.right &&
+        randomX + noButton.offsetWidth > yesRect.left &&
+        randomY < yesRect.bottom &&
+        randomY + noButton.offsetHeight > yesRect.top
+      ) {
+        return getRandomPosition(); // Retry if overlapping
+      }
 
-      do {
-        // Calculate new random positions
-        newLeft = Math.random() * (window.innerWidth - noRect.width);
-        newTop = Math.random() * (window.innerHeight - noRect.height);
-      } while (
-        // Ensure "No" does not overlap "Yes"
-        newLeft < yesRect.right &&
-        newLeft + noRect.width > yesRect.left &&
-        newTop < yesRect.bottom &&
-        newTop + noRect.height > yesRect.top
-      );
-
-      // Update the button's position
-      noButton.style.left = `${newLeft}px`;
-      noButton.style.top = `${newTop}px`;
+      return { x: randomX, y: randomY };
     }
 
     function handleNoClick() {
       noClickCount++;
-      moveNoButton(); // Move the button after each click
+
+      // Move "No" button to random position
+      const { x, y } = getRandomPosition();
+      noButton.style.left = `${x}px`;
+      noButton.style.top = `${y}px`;
+
+      // Display popup message after 5 clicks
       if (noClickCount === 5) {
         const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
         popup.innerText = randomQuote;
@@ -147,7 +153,11 @@
     }
 
     function yesClick() {
-      message.innerText = "I knew you'd say yes! Let's discuss our date and when is a suitable time for you.";
+      message.innerHTML = `
+        <h2>I knew you'd say yes, let's discuss our date and when is a suitable time for you.</h2>
+        <h2>Love, Avik <span>&#10084;</span></h2>
+      `;
+      noClickCount = 0; // Reset the counter
       noButton.style.display = "none"; // Hide the "No" button
     }
   </script>
