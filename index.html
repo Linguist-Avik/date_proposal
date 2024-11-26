@@ -35,7 +35,7 @@
       align-items: center;
       justify-content: center;
       margin-top: 20px;
-      gap: 20px; /* Fixed gap for first load */
+      gap: 20px;
     }
 
     button {
@@ -50,14 +50,14 @@
     #yes-button {
       background-color: #28a745;
       color: white;
-      position: relative; /* Stays fixed */
+      position: relative;
     }
 
     #no-button {
       background-color: #dc3545;
       color: white;
       top: 0;
-      left: 150px; /* Beside "Yes" button initially */
+      left: 150px;
     }
 
     #popup {
@@ -122,7 +122,11 @@
         newLeft < yesRect.right &&
         newLeft + noRect.width > yesRect.left &&
         newTop < yesRect.bottom &&
-        newTop + noRect.height > yesRect.top
+        newTop + noRect.height > yesRect.top &&
+        newLeft > 0 &&
+        newTop > 0 &&
+        newLeft + noRect.width <= window.innerWidth &&
+        newTop + noRect.height <= window.innerHeight
       );
 
       noButton.style.left = `${newLeft}px`;
