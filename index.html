@@ -121,16 +121,6 @@
     ];
     let noClickCount = 0;
 
-    // Initialize the positions and logic
-    function initializeButtons() {
-      const yesButtonRect = yesButton.getBoundingClientRect();
-      const containerRect = container.getBoundingClientRect();
-
-      // Position "No" button to the left of "Yes" with a little space on the first load
-      noButton.style.left = `${yesButtonRect.left - noButton.offsetWidth - 10}px`;
-      noButton.style.top = `${yesButtonRect.top + (yesButton.offsetHeight - noButton.offsetHeight) / 2}px`;
-    }
-
     // Function to get random position for No button within the container
     function getRandomPosition() {
       const containerRect = container.getBoundingClientRect();
@@ -180,6 +170,15 @@
       `;
       noClickCount = 0; // Reset the counter
       noButton.style.display = "none"; // Hide the "No" button
+    }
+
+    // Function to initialize button positions correctly
+    function initializeButtons() {
+      const yesButtonRect = yesButton.getBoundingClientRect();
+
+      // Position "No" button to the left of "Yes" with a little space on the first load
+      noButton.style.left = `${yesButtonRect.left + yesButtonRect.width + 10}px`;
+      noButton.style.top = `${yesButtonRect.top + (yesButtonRect.height - noButton.offsetHeight) / 2}px`;
     }
 
     // Initialize button positions on load
