@@ -121,15 +121,17 @@
     ];
     let noClickCount = 0;
 
+    // Initialize the positions and logic
     function initializeButtons() {
       const yesButtonRect = yesButton.getBoundingClientRect();
       const containerRect = container.getBoundingClientRect();
 
-      // Position "No" button to the right of "Yes" on first load
-      noButton.style.left = `${yesButtonRect.width + 30}px`;
-      noButton.style.top = `0px`;
+      // Position "No" button to the left of "Yes" with a little space on the first load
+      noButton.style.left = `${yesButtonRect.left - noButton.offsetWidth - 10}px`;
+      noButton.style.top = `${yesButtonRect.top + (yesButton.offsetHeight - noButton.offsetHeight) / 2}px`;
     }
 
+    // Function to get random position for No button within the container
     function getRandomPosition() {
       const containerRect = container.getBoundingClientRect();
 
@@ -138,6 +140,7 @@
 
       const boundaryPadding = 20; // Space to avoid touching boundaries
 
+      // Calculate the random position within the container boundaries
       const maxX = containerRect.width - noButtonWidth - boundaryPadding;
       const maxY = containerRect.height - noButtonHeight - boundaryPadding;
 
@@ -147,6 +150,7 @@
       return { x: randomX, y: randomY };
     }
 
+    // Handle clicks on No button
     function handleNoClick() {
       noClickCount++;
 
@@ -168,6 +172,7 @@
       }
     }
 
+    // Handle click on Yes button
     function yesClick() {
       message.innerHTML = `
         <h2>I knew you'd say yes, let's discuss our date and when is a suitable time for you.</h2>
