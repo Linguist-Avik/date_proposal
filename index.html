@@ -115,6 +115,7 @@
       let newLeft, newTop;
 
       do {
+        // Calculate new random positions
         newLeft = Math.random() * (window.innerWidth - noRect.width);
         newTop = Math.random() * (window.innerHeight - noRect.height);
       } while (
@@ -122,13 +123,10 @@
         newLeft < yesRect.right &&
         newLeft + noRect.width > yesRect.left &&
         newTop < yesRect.bottom &&
-        newTop + noRect.height > yesRect.top &&
-        newLeft > 0 &&
-        newTop > 0 &&
-        newLeft + noRect.width <= window.innerWidth &&
-        newTop + noRect.height <= window.innerHeight
+        newTop + noRect.height > yesRect.top
       );
 
+      // Update the button's position
       noButton.style.left = `${newLeft}px`;
       noButton.style.top = `${newTop}px`;
     }
