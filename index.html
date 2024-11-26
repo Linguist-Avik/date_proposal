@@ -24,34 +24,56 @@
     h1 {
       font-size: 24px;
       color: #333;
-      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    .bold {
+      font-weight: bold;
+    }
+
+    /* Styling for button container */
+    .button-container {
+      display: flex;
+      justify-content: center;
+      gap: 20px; /* Adds spacing between buttons */
+      margin-top: 20px;
     }
 
     /* Styling for buttons */
     button {
       font-size: 18px;
       padding: 10px 20px;
-      margin: 10px;
       border: none;
       border-radius: 5px;
       cursor: pointer;
       position: relative;
     }
 
-    /* Yes button specific styling */
     #yes-button {
       background-color: #28a745;
       color: white;
     }
 
-    /* No button specific styling */
     #no-button {
       background-color: #dc3545;
       color: white;
-      position: absolute;
     }
 
-    /* Message styling */
+    /* Popup styling */
+    #popup {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #333;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 5px;
+      display: none;
+      font-size: 16px;
+      opacity: 0.9;
+    }
+
     #message {
       font-size: 18px;
       color: #555;
@@ -60,17 +82,31 @@
   </style>
 </head>
 <body>
-  <h1> 
+  <h1>
     <span class="bold">Dear Sushrita</span> <br>
     Will you go on a date with me?
   </h1>
-  <button id="yes-button" onclick="yesClick()">Yes</button>
-  <button id="no-button" onmouseenter="moveNoButton()">No</button>
+
+  <div class="button-container">
+    <button id="yes-button" onclick="yesClick()">Yes</button>
+    <button id="no-button" onmouseenter="moveNoButton()" onclick="handleNoClick()">No</button>
+  </div>
+
   <p id="message"></p>
+  <div id="popup"></div>
 
   <script>
     const noButton = document.getElementById("no-button");
+    const yesButton = document.getElementById("yes-button");
     const message = document.getElementById("message");
+    const popup = document.getElementById("popup");
+    const quotes = [
+      "I can play all day long",
+      "Quit playing Ms. Palit",
+      "May be say YES?",
+      "The YES option looks better",
+    ];
+    let noClickCount = 0;
 
     // Function to randomly move the No button
     function moveNoButton() {
@@ -78,6 +114,23 @@
       const y = Math.random() * (window.innerHeight - noButton.offsetHeight);
       noButton.style.left = x + "px";
       noButton.style.top = y + "px";
+    }
+
+    // Function to handle No button click
+    function handleNoClick() {
+      noClickCount++;
+      if (noClickCount === 5) {
+        // Show a random quote from the list
+        const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+        popup.innerText = randomQuote;
+        popup.style.display = "block";
+
+        // Hide popup after 5 seconds
+        setTimeout(() => {
+          popup.style.display = "none";
+          noClickCount = 0; // Reset the counter
+        }, 5000);
+      }
     }
 
     // Function to handle Yes button click
