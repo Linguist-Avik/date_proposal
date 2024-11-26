@@ -109,25 +109,27 @@
     let noClickCount = 0;
 
     function getRandomPosition() {
-      // Get the dimensions of the viewport
-      const maxX = window.innerWidth - noButton.offsetWidth;
-      const maxY = window.innerHeight - noButton.offsetHeight;
+      // Get viewport dimensions
+      const viewportWidth = window.innerWidth;
+      const viewportHeight = window.innerHeight;
 
-      // Generate random positions within screen bounds
-      const randomX = Math.random() * maxX;
-      const randomY = Math.random() * maxY;
+      // Get button dimensions
+      const noButtonWidth = noButton.offsetWidth;
+      const noButtonHeight = noButton.offsetHeight;
 
       const yesRect = yesButton.getBoundingClientRect();
 
-      // Ensure "No" button doesn't overlap with "Yes" button
-      if (
+      // Generate random positions within bounds
+      let randomX, randomY;
+      do {
+        randomX = Math.random() * (viewportWidth - noButtonWidth);
+        randomY = Math.random() * (viewportHeight - noButtonHeight);
+      } while (
         randomX < yesRect.right &&
-        randomX + noButton.offsetWidth > yesRect.left &&
+        randomX + noButtonWidth > yesRect.left &&
         randomY < yesRect.bottom &&
-        randomY + noButton.offsetHeight > yesRect.top
-      ) {
-        return getRandomPosition(); // Retry if overlapping
-      }
+        randomY + noButtonHeight > yesRect.top
+      );
 
       return { x: randomX, y: randomY };
     }
@@ -135,12 +137,12 @@
     function handleNoClick() {
       noClickCount++;
 
-      // Move "No" button to random position
+      // Move "No" button to a random position
       const { x, y } = getRandomPosition();
       noButton.style.left = `${x}px`;
       noButton.style.top = `${y}px`;
 
-      // Display popup message after 5 clicks
+      // Show a popup message after 5 clicks
       if (noClickCount === 5) {
         const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
         popup.innerText = randomQuote;
