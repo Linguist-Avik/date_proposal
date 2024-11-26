@@ -121,27 +121,28 @@
     ];
     let noClickCount = 0;
 
-    function getRandomPosition() {
-      // Get container dimensions
+    function initializeButtons() {
+      const yesButtonRect = yesButton.getBoundingClientRect();
       const containerRect = container.getBoundingClientRect();
 
-      // Get button dimensions
+      // Position "No" button to the right of "Yes" on first load
+      noButton.style.left = `${yesButtonRect.width + 30}px`;
+      noButton.style.top = `0px`;
+    }
+
+    function getRandomPosition() {
+      const containerRect = container.getBoundingClientRect();
+
       const noButtonWidth = noButton.offsetWidth;
       const noButtonHeight = noButton.offsetHeight;
 
-      const yesRect = yesButton.getBoundingClientRect();
+      const boundaryPadding = 20; // Space to avoid touching boundaries
 
-      // Generate random positions within container bounds
-      let randomX, randomY;
-      do {
-        randomX = Math.random() * (containerRect.width - noButtonWidth);
-        randomY = Math.random() * (containerRect.height - noButtonHeight);
-      } while (
-        randomX < yesRect.right - containerRect.left &&
-        randomX + noButtonWidth > yesRect.left - containerRect.left &&
-        randomY < yesRect.bottom - containerRect.top &&
-        randomY + noButtonHeight > yesRect.top - containerRect.top
-      );
+      const maxX = containerRect.width - noButtonWidth - boundaryPadding;
+      const maxY = containerRect.height - noButtonHeight - boundaryPadding;
+
+      const randomX = Math.random() * (maxX - boundaryPadding) + boundaryPadding;
+      const randomY = Math.random() * (maxY - boundaryPadding) + boundaryPadding;
 
       return { x: randomX, y: randomY };
     }
@@ -175,6 +176,9 @@
       noClickCount = 0; // Reset the counter
       noButton.style.display = "none"; // Hide the "No" button
     }
+
+    // Initialize button positions on load
+    window.onload = initializeButtons;
   </script>
 </body>
 </html>
