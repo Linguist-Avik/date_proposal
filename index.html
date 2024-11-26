@@ -37,6 +37,8 @@
       justify-content: center;
       gap: 20px; /* Adds spacing between buttons */
       margin-top: 20px;
+      position: relative; /* Relative position for button movement */
+      width: 80%; /* Adjust width for responsive layout */
     }
 
     /* Styling for buttons */
@@ -46,18 +48,19 @@
       border: none;
       border-radius: 5px;
       cursor: pointer;
-      position: relative;
+      position: absolute; /* Allows movement for the "No" button */
     }
 
     #yes-button {
       background-color: #28a745;
       color: white;
+      left: 0; /* Initial position for the "Yes" button */
     }
 
     #no-button {
       background-color: #dc3545;
       color: white;
-      position: absolute; /* Allows the No button to move anywhere on the screen */
+      right: 0; /* Initial position for the "No" button */
     }
 
     /* Popup styling */
@@ -98,6 +101,7 @@
 
   <script>
     const noButton = document.getElementById("no-button");
+    const yesButton = document.getElementById("yes-button");
     const message = document.getElementById("message");
     const popup = document.getElementById("popup");
     const quotes = [
@@ -108,18 +112,33 @@
     ];
     let noClickCount = 0;
 
-    // Function to randomly move the No button when hovered or clicked
+    // Function to get random positions while ensuring no overlap with "Yes" button
     function moveNoButton() {
-      const x = Math.random() * (window.innerWidth - noButton.offsetWidth);
-      const y = Math.random() * (window.innerHeight - noButton.offsetHeight);
-      noButton.style.left = x + "px";
-      noButton.style.top = y + "px";
+      const yesButtonRect = yesButton.getBoundingClientRect();
+      const buttonWidth = noButton.offsetWidth;
+      const buttonHeight = noButton.offsetHeight;
+
+      let x, y;
+
+      do {
+        x = Math.random() * (window.innerWidth - buttonWidth);
+        y = Math.random() * (window.innerHeight - buttonHeight);
+      } while (
+        // Ensure the new position does not overlap the "Yes" button
+        x < yesButtonRect.right &&
+        x + buttonWidth > yesButtonRect.left &&
+        y < yesButtonRect.bottom &&
+        y + buttonHeight > yesButtonRect.top
+      );
+
+      noButton.style.left = `${x}px`;
+      noButton.style.top = `${y}px`;
     }
 
     // Function to handle No button click
     function handleNoClick() {
       noClickCount++;
-      moveNoButton(); // Keep moving the No button after every click
+      moveNoButton(); // Move the No button after every click
       if (noClickCount === 5) {
         // Show a random quote after 5 clicks
         const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
